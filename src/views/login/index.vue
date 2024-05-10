@@ -17,7 +17,7 @@ import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
 import Lock from "@iconify-icons/ri/lock-fill";
 import User from "@iconify-icons/ri/user-3-fill";
-
+import { encrypt, decrypt } from "@/utils/jsencrypt";
 defineOptions({
   name: "Login"
 });
@@ -34,6 +34,8 @@ const { title } = useNav();
 
 const ruleForm = reactive({
   username: "admin",
+  rememberMe: "false",
+  code: "",
   password: "admin123"
 });
 
@@ -43,7 +45,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
     if (valid) {
       loading.value = true;
       useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
+        .loginByUsername({
+          username: ruleForm.username,
+          password: encrypt("admin123")
+        })
         .then(res => {
           if (res.success) {
             // 获取后端路由
